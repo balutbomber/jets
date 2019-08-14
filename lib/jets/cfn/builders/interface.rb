@@ -15,14 +15,31 @@ module Jets::Cfn::Builders
     end
 
     def write
-      FileUtils.mkdir_p(File.dirname(template_path))
-      IO.write(template_path, text)
+      if @template.kind_of?(Array)
+        for page in 1..@template.length do
+          @template_page = page - 1
+          FileUtils.mkdir_p(File.dirname(template_path))
+          IO.write(template_path, text)    
+        end
+      else
+        FileUtils.mkdir_p(File.dirname(template_path))
+        IO.write(template_path, text)
+      end
+
+    end
+
+    def template
+      if @template.kind_of?(Array)
+        @template[@template_page]
+      else
+        @template
+      end
     end
 
     def cook_template
       # need the to_hash or the YAML dump has
       #  !ruby/hash:ActiveSupport::HashWithIndifferentAccess
-      @template.to_hash
+      template.to_hash
     end
 
     def text
@@ -57,8 +74,8 @@ module Jets::Cfn::Builders
     def add_parameter(name, options={})
       defaults = { Type: "String" }
       options = defaults.merge(options)
-      @template[:Parameters] ||= {}
-      @template[:Parameters][name.to_s.camelize] = options
+      template[:Parameters] ||= {}
+      template[:Parameters][name.to_s.camelize] = options
     end
 
     def add_outputs(attributes)
@@ -68,8 +85,10 @@ module Jets::Cfn::Builders
     end
 
     def add_output(name, options={})
-      @template[:Outputs] ||= {}
-      @template[:Outputs][name.camelize] = options
+      turn_page if @template.kind_of?(Array) && template[:Outputs].present? && template[:Outputs].length >= 20
+        
+      template[:Outputs] ||= {}
+      template[:Outputs][name.camelize] = options
     end
 
     def add_resources
@@ -121,7 +140,7 @@ module Jets::Cfn::Builders
                      }
                    end
 
-      @template['Resources'][logical_id] = attributes
+      template['Resources'][logical_id] = attributes
     end
   end
 end

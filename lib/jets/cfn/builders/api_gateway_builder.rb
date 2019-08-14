@@ -5,7 +5,14 @@ module Jets::Cfn::Builders
 
     def initialize(options={})
       @options = options
-      @template = ActiveSupport::HashWithIndifferentAccess.new(Resources: {})
+      @template = Array[ActiveSupport::HashWithIndifferentAccess.new(Resources: {})]
+      @template_page = 1
+    end
+
+    # turn_page is an interface method
+    def turn_page
+      @template_page = @template_page + 1
+      @template[@template_page] = ActiveSupport::HashWithIndifferentAccess.new(Resources: {})
     end
 
     # compose is an interface method
@@ -19,7 +26,7 @@ module Jets::Cfn::Builders
 
     # template_path is an interface method
     def template_path
-      Jets::Naming.api_gateway_template_path(1)
+      Jets::Naming.api_gateway_template_path(@template_page)
     end
 
     # do not bother writing a template if routes are empty
