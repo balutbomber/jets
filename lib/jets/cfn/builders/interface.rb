@@ -19,14 +19,14 @@ module Jets::Cfn::Builders
       IO.write(template_path, text)
     end
 
-    def template
+    def cook_template
       # need the to_hash or the YAML dump has
       #  !ruby/hash:ActiveSupport::HashWithIndifferentAccess
       @template.to_hash
     end
 
     def text
-      text = YAML.dump(template)
+      text = YAML.dump(cook_template)
       post_process_template(text)
     end
 
