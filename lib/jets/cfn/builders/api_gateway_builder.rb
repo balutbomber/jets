@@ -19,7 +19,7 @@ module Jets::Cfn::Builders
 
     # template_path is an interface method
     def template_path
-      Jets::Naming.api_gateway_template_path
+      Jets::Naming.api_gateway_template_path(1)
     end
 
     # do not bother writing a template if routes are empty

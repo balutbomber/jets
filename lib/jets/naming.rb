@@ -26,8 +26,8 @@ class Jets::Naming
     end
 
     # consider moving these methods into cfn/builder/helpers.rb or that area.
-    def api_gateway_template_path
-      "#{template_path_prefix}-api-gateway.yml"
+    def api_gateway_template_path(page)
+      "#{template_path_prefix}-api-gateway-#{page}.yml"
     end
 
     def api_deployment_template_path
