@@ -55,7 +55,7 @@ module Jets::Commands
     end
 
     def build_api_gateway_templates
-      Jets::Cfn::Builders::ApiGatewayBuilder.new(@options).build
+      @api_gateway_builder = Jets::Cfn::Builders::ApiGatewayBuilder.new(@options).build
       Jets::Cfn::Builders::ApiDeploymentBuilder.new(@options).build
     end
 
@@ -92,7 +92,9 @@ module Jets::Commands
     end
 
     def build_parent_template
-      Jets::Cfn::Builders::ParentBuilder.new(@options).build
+      options = @options.dup
+      options[:api_gateway_page_range] = @api_gateway_builder.page_range
+      Jets::Cfn::Builders::ParentBuilder.new(options).build
     end
 
     def clean_templates

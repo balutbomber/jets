@@ -5,8 +5,12 @@ module Jets::Cfn::Builders
 
     def initialize(options={})
       @options = options
+      @template_page = 0
       @template = Array[ActiveSupport::HashWithIndifferentAccess.new(Resources: {})]
-      @template_page = 1
+    end
+
+    def page_range
+      (1..@template.length)
     end
 
     # turn_page is an interface method
@@ -26,7 +30,7 @@ module Jets::Cfn::Builders
 
     # template_path is an interface method
     def template_path
-      Jets::Naming.api_gateway_template_path(@template_page)
+      Jets::Naming.api_gateway_template_path(@template_page + 1)
     end
 
     # do not bother writing a template if routes are empty

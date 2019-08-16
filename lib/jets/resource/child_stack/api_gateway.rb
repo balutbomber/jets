@@ -5,15 +5,18 @@
 #
 module Jets::Resource::ChildStack
   class ApiGateway < Base
+    def initialize(s3_bucket, options={})
+      super
+      @page = options[:page]
+    end
+
     def definition
-      {
-        api_gateway: {
-          type: "AWS::CloudFormation::Stack",
-          properties: {
-            template_url: template_url,
-          }
+      Hash["api_gateway_#{@page}" => {
+        type: "AWS::CloudFormation::Stack",
+        properties: {
+          template_url: template_url,
         }
-      }
+      }]
     end
 
     def outputs
@@ -23,7 +26,7 @@ module Jets::Resource::ChildStack
     end
 
     def template_filename
-      "#{Jets.config.project_namespace}-api-gateway.yml"
+      "#{Jets.config.project_namespace}-api-gateway-#{@page}.yml"
     end
   end
 end

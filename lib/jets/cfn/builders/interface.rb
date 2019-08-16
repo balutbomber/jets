@@ -12,6 +12,7 @@ module Jets::Cfn::Builders
 
       compose # must be implemented by subclass
       write
+      self
     end
 
     def write
@@ -85,7 +86,7 @@ module Jets::Cfn::Builders
     end
 
     def add_output(name, options={})
-      turn_page if @template.kind_of?(Array) && template[:Outputs].present? && template[:Outputs].length >= 20
+      turn_page if @template.kind_of?(Array) && template[:Outputs].present? && template[:Outputs].length >= 60
         
       template[:Outputs] ||= {}
       template[:Outputs][name.camelize] = options
